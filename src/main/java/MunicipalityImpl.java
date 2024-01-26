@@ -1,18 +1,23 @@
-import lt.techin.municipality.IllegalCitizenException;
-import lt.techin.municipality.Municipality;
-import lt.techin.municipality.Person;
-import lt.techin.municipality.PersonPredicate;
+import lt.techin.municipality.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.*;
+
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
 public class MunicipalityImpl implements Municipality {
 
     ArrayList<Person> municipality = new ArrayList<>();
+    private TaxCalculator taxCalculator;
+    private Person person;
+
+    public MunicipalityImpl(TaxCalculator taxCalculator) {
+        this.taxCalculator = taxCalculator;
+    }
 
     @Override
     public void registerCitizen(Person person) throws IllegalCitizenException {
@@ -90,7 +95,7 @@ public class MunicipalityImpl implements Municipality {
 
         for (Person person : municipality) {
 
-            if (person.getDateOfBirth().isBefore(LocalDate.parse("2006-01-26"))); {
+            if (person.getDateOfBirth().isBefore(LocalDate.parse("2006-01-26"))) {
                 count++;
 
             }
@@ -102,29 +107,32 @@ public class MunicipalityImpl implements Municipality {
     @Override
     public double totalIncomeInTaxes() {
         double tax = 0;
-        TaxCalculatorImpl taxCalculator = new TaxCalculatorImpl();
+//        TaxCalculatorImpl taxCalculator = new TaxCalculatorImpl();
         for (Person person : municipality) {
             tax = tax + taxCalculator.calculateTax(person);
 
-            return tax;
+
         }
-        return 0;
+        return tax;
     }
 
     @Override
-    public Collection<Person> findCitizensBy(PersonPredicate var1) {
-        return municipality.stream().filter((Predicate<? super Person>) var1).toList();
+    public Collection<Person> findCitizensBy(PersonPredicate predicate) {
+
+        return  municipality.stream().filter(predicate::test).toList();
 
     }
 
     @Override
     public Collection<Person> getOrderedCitizens() {
-        return null;
+
+        return municipality.stream().sorted(Comparator.comparing(Person::getLastName).thenComparing(Person::getFirstName)).collect(Collectors.toList());
     }
 
     @Override
     public Map<Integer, List<Person>> groupByYearOfBirth() {
-        return null;
+       return municipality.stream().collect(groupingBy(p -> p.getDateOfBirth().getYear()));
+
     }
 
 }

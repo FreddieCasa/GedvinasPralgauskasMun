@@ -8,7 +8,7 @@ public class TaxCalculatorImpl implements TaxCalculator {
     @Override
     public double calculateTax(Person person) {
 
-        return person.getYearlyIncome() * (taxRateProvider.getTaxRate(person.getYearlyIncome()));
+        return person.getYearlyIncome() * (taxRateProvider.getTaxRate(person.getYearlyIncome()))/100.0;
 
     }
 }

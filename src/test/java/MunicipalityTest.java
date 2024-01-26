@@ -8,7 +8,7 @@ public class MunicipalityTest extends AbstractMunicipalityTest {
 
     @Override
     public Municipality getMunicipality(TaxCalculator taxCalculator) {
-        return new MunicipalityImpl();
+        return new MunicipalityImpl(taxCalculator);
     }
 
     @Override
